@@ -23,17 +23,25 @@ public class User {
 
     private String lastName;
 
+    private String email;
+
+    private String password;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserProduct> products;
 
     public void addUserProduct(UserProduct userProduct) {
         userProduct.setUser(this);
 
         products.add(userProduct);
+    }
+
+    public void addUserProducts(List<UserProduct> userProducts) {
+        products.addAll(userProducts);
     }
 }

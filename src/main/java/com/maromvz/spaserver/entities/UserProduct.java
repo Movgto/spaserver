@@ -1,5 +1,6 @@
 package com.maromvz.spaserver.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -19,6 +20,7 @@ public class UserProduct {
     @ManyToOne
     @MapsId("userId")
     @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties("products")
     private User user;
 
     private boolean active;

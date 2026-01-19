@@ -2,6 +2,8 @@ CREATE TABLE IF NOT EXISTS users(
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(20) NOT NULL,
     last_name VARCHAR(20) NOT NULL,
+    email VARCHAR(20) NOT NULL UNIQUE,
+    password VARCHAR(20) NOT NULL,
     role VARCHAR(10) NOT NULL,
     created_at TIMESTAMP NOT NULL
 );

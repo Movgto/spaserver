@@ -1,19 +1,20 @@
 package com.maromvz.spaserver.entities;
 
 import jakarta.persistence.Embeddable;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserProductId implements Serializable {
-    private final Long userId;
-    private final Long productId;
-
-    public UserProductId(Long userId, Long productId) {
-        this.userId = userId;
-        this.productId = productId;
-    }
+    private Long userId;
+    private Long productId;
 
     @Override
     public boolean equals(Object o) {

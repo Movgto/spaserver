@@ -2,17 +2,52 @@ package com.maromvz.spaserver.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
 @Table(name = "users")
 @Data
-public class User {
+public class User implements UserDetails {
 
-    public static enum Role {
-        ADMIN, USER
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+
+        return getRoles().stream()
+                .map(r -> new SimpleGrantedAuthority(r.getRole().getName().toString()))
+                .toList();
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     @Id
@@ -23,17 +58,20 @@ public class User {
 
     private String lastName;
 
+    @Column(unique = true, nullable = false)
     private String email;
 
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @ToString.Exclude
+    private List<UserRole> roles = new ArrayList<>();
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserProduct> products;
+    @ToString.Exclude
+    private List<UserProduct> products = new ArrayList<>();
 
     public void addUserProduct(UserProduct userProduct) {
         userProduct.setUser(this);
@@ -43,5 +81,15 @@ public class User {
 
     public void addUserProducts(List<UserProduct> userProducts) {
         products.addAll(userProducts);
+    }
+
+    public void addRole(Role role) {
+        UserRole userRole = new UserRole();
+
+        userRole.setRole(role);
+        userRole.setUser(this);
+        userRole.setId(new UserRoleId(this.getId(), role.getId()));
+
+        roles.add(userRole);
     }
 }

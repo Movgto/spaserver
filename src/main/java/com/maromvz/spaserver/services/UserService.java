@@ -8,16 +8,20 @@ import com.maromvz.spaserver.entities.UserProductId;
 import com.maromvz.spaserver.repo.ProductRepo;
 import com.maromvz.spaserver.repo.UserProductRepo;
 import com.maromvz.spaserver.repo.UserRepo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.temporal.TemporalAmount;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
+@Slf4j
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepo userRepo;
@@ -53,5 +57,10 @@ public class UserService {
         userRepo.save(user);
 
         return user;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepo.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 }

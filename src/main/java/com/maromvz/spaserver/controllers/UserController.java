@@ -6,6 +6,7 @@ import com.maromvz.spaserver.repo.UserRepo;
 import com.maromvz.spaserver.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,13 +21,32 @@ public class UserController {
     public ResponseEntity<?> addProducts(
             @RequestBody AddProductsDTO addProductsDTO)
     {
-        User user = userService.addProductsToUser(addProductsDTO);
+        try {
+            User user = userService.addProductsToUser(addProductsDTO);
 
-        return ResponseEntity.ok("Products successfully added to " + user.getFirstName() + "!");
+            return ResponseEntity.ok("Products successfully added to " + user.getFirstName() + "!");
+        } catch(Exception e) {
+            e.printStackTrace();
+
+            return ResponseEntity.internalServerError().build();
+        }
+
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUsersWithProducts(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserProducts(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getUser(Authentication auth) {
+        User user = (User) auth.getPrincipal();
+
+        return ResponseEntity.ok(new Object(){
+            public final Long userId = user.getId();
+            public final String firstName = user.getFirstName();
+            public final String lastName = user.getLastName();
+            public final String email = user.getEmail();
+        });
     }
 }

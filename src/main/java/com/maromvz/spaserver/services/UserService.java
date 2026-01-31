@@ -1,12 +1,11 @@
 package com.maromvz.spaserver.services;
 
 import com.maromvz.spaserver.dto.AddProductsDTO;
+import com.maromvz.spaserver.entities.Appointment;
 import com.maromvz.spaserver.entities.Product;
 import com.maromvz.spaserver.entities.User;
-import com.maromvz.spaserver.entities.UserProduct;
-import com.maromvz.spaserver.entities.UserProductId;
 import com.maromvz.spaserver.repo.ProductRepo;
-import com.maromvz.spaserver.repo.UserProductRepo;
+import com.maromvz.spaserver.repo.AppointmentRepo;
 import com.maromvz.spaserver.repo.UserRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
@@ -30,10 +28,10 @@ public class UserService implements UserDetailsService {
     private ProductRepo productRepo;
 
     @Autowired
-    private UserProductRepo userProductRepo;
+    private AppointmentRepo appointmentRepo;
 
-    public List<UserProduct> getUserProducts(Long userId) {
-        return userProductRepo.findByIdUserId(userId);
+    public List<Appointment> getUserProducts(Long userId) {
+        return appointmentRepo.findByUserId(userId);
     }
 
     public User addProductsToUser(AddProductsDTO addProductsDTO) {
@@ -41,13 +39,11 @@ public class UserService implements UserDetailsService {
 
         List<Product> products = StreamSupport.stream(productRepo.findAllById(addProductsDTO.getProductIds()).spliterator(), false).toList();
 
-        List<UserProduct> userProducts = products.stream().map(p -> {
-            UserProduct userProduct = new UserProduct();
+        List<Appointment> userProducts = products.stream().map(p -> {
+            Appointment userProduct = new Appointment();
 
             userProduct.setProduct(p);
             userProduct.setUser(user);
-            userProduct.setScheduledDate(LocalDateTime.now().plusDays(2));
-            userProduct.setId(new UserProductId(user.getId(), p.getId()));
 
             return userProduct;
         }).toList();

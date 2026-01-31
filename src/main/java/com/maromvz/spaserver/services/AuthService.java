@@ -1,24 +1,15 @@
 package com.maromvz.spaserver.services;
 
-import com.maromvz.spaserver.dto.auth.JwtResponse;
-import com.maromvz.spaserver.dto.auth.LoginDto;
 import com.maromvz.spaserver.dto.auth.RegisterUserDto;
-import com.maromvz.spaserver.entities.RefreshToken;
 import com.maromvz.spaserver.entities.Role;
 import com.maromvz.spaserver.entities.User;
-import com.maromvz.spaserver.entities.UserRoleId;
 import com.maromvz.spaserver.exceptions.auth.PasswordsDontMatchException;
 import com.maromvz.spaserver.repo.RoleRepo;
 import com.maromvz.spaserver.repo.UserRepo;
 import com.maromvz.spaserver.utils.JwtUtils;
 import com.maromvz.spaserver.utils.RefreshTokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -66,21 +57,21 @@ public class AuthService {
         return newUser;
     }
 
-    public JwtResponse loginUser(LoginDto loginDto) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword())
-        );
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        var token = jwtUtils.generateJwtToken(authentication);
-
-        User user = (User) authentication.getPrincipal();
-
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
-
-        ResponseCookie responseCookie = refreshTokenUtils.generateRefreshCookie(refreshToken.getToken());
-
-        return new JwtResponse(token, user.getUsername(), user.getAuthorities().stream().map(a -> a.getAuthority()).toList());
-    }
+//    public JwtResponse loginUser(LoginDto loginDto) {
+//        Authentication authentication = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword())
+//        );
+//
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//        var token = jwtUtils.generateJwtToken(authentication);
+//
+//        User user = (User) authentication.getPrincipal();
+//
+//        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
+//
+//        ResponseCookie responseCookie = refreshTokenUtils.generateRefreshCookie(refreshToken.getToken());
+//
+//        return new JwtResponse(token, user.getUsername(), user.getAuthorities().stream().map(a -> a.getAuthority()).toList());
+//    }
 }

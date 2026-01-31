@@ -12,7 +12,7 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserProductId implements Serializable {
+public class AppointmentId implements Serializable {
     private Long userId;
     private Long productId;
 
@@ -22,7 +22,7 @@ public class UserProductId implements Serializable {
 
         if (o == null || this.getClass() != o.getClass()) return false;
 
-        UserProductId that = (UserProductId) o;
+        AppointmentId that = (AppointmentId) o;
 
         return (Objects.equals(this.productId, that.productId) && Objects.equals(this.userId, that.userId));
     }

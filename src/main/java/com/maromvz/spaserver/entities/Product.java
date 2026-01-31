@@ -21,5 +21,7 @@ public class Product {
 
     private BigDecimal price;
 
+    private int durationMinutes;
+
     private LocalDateTime createdAt = LocalDateTime.now();
 }

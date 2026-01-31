@@ -1,5 +1,6 @@
 package com.maromvz.spaserver.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
@@ -65,21 +66,22 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @ToString.Exclude
+    @JsonIgnoreProperties("user")
     private List<UserRole> roles = new ArrayList<>();
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
-    private List<UserProduct> products = new ArrayList<>();
+    private List<Appointment> products = new ArrayList<>();
 
-    public void addUserProduct(UserProduct userProduct) {
+    public void addUserProduct(Appointment userProduct) {
         userProduct.setUser(this);
 
         products.add(userProduct);
     }
 
-    public void addUserProducts(List<UserProduct> userProducts) {
+    public void addUserProducts(List<Appointment> userProducts) {
         products.addAll(userProducts);
     }
 

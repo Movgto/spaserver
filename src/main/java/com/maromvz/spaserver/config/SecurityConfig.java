@@ -32,6 +32,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/services").permitAll()
                         .requestMatchers("/api/reservations").authenticated()
                         .requestMatchers("/users/*", "/users").authenticated()
+                        .requestMatchers("/appointments/*", "/appointments").authenticated()
                         .anyRequest().denyAll()
                 );
 

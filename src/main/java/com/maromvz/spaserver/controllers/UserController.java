@@ -17,27 +17,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/products")
-    public ResponseEntity<?> addProducts(
-            @RequestBody AddProductsDTO addProductsDTO)
-    {
-        try {
-            User user = userService.addProductsToUser(addProductsDTO);
-
-            return ResponseEntity.ok("Products successfully added to " + user.getFirstName() + "!");
-        } catch(Exception e) {
-            e.printStackTrace();
-
-            return ResponseEntity.internalServerError().build();
-        }
-
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getUsersWithProducts(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getUserProducts(id));
-    }
-
     @GetMapping
     public ResponseEntity<?> getUser(Authentication auth) {
         User user = (User) auth.getPrincipal();

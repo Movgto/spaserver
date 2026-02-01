@@ -7,6 +7,7 @@ import com.maromvz.spaserver.entities.RefreshToken;
 import com.maromvz.spaserver.entities.User;
 import com.maromvz.spaserver.exceptions.auth.PasswordsDontMatchException;
 import com.maromvz.spaserver.repo.RefreshTokenRepo;
+import com.maromvz.spaserver.security.annotations.CanCreateAdmins;
 import com.maromvz.spaserver.services.AuthService;
 import com.maromvz.spaserver.services.RefreshTokenService;
 import com.maromvz.spaserver.utils.JwtUtils;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -51,6 +53,7 @@ public class AuthController {
     private RefreshTokenUtils refreshTokenUtils;
 
     @PostMapping("/register")
+    @CanCreateAdmins
     public ResponseEntity<?> registerUser(
             @RequestBody RegisterUserDto userDto
             ) {

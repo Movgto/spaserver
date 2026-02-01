@@ -1,7 +1,7 @@
 package com.maromvz.spaserver.controllers;
 
-import com.maromvz.spaserver.entities.Product;
-import com.maromvz.spaserver.repo.ProductRepo;
+import com.maromvz.spaserver.entities.Service;
+import com.maromvz.spaserver.repo.ServiceRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,14 +15,14 @@ import java.util.stream.StreamSupport;
 @RequestMapping("/products")
 public class ProductController {
     @Autowired
-    private ProductRepo productRepo;
+    private ServiceRepo serviceRepo;
 
     @GetMapping
     public ResponseEntity<?> getProducts() {
-        List<Product> products = StreamSupport
-                .stream(productRepo.findAll().spliterator(), false)
+        List<Service> services = StreamSupport
+                .stream(serviceRepo.findAll().spliterator(), false)
                 .toList();
 
-        return ResponseEntity.ok(products);
+        return ResponseEntity.ok(services);
     }
 }

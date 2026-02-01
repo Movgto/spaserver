@@ -13,7 +13,7 @@ import java.util.UUID;
 @Service
 public class RefreshTokenService {
 
-    @Value("${app.auth.refreshToken.duration}")
+    @Value("${app.auth.refresh-token.duration}")
     private Long refreshTokenDurationMs;
 
     @Autowired

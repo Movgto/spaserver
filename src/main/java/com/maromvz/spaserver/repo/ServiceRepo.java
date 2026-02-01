@@ -1,9 +1,9 @@
 package com.maromvz.spaserver.repo;
 
-import com.maromvz.spaserver.entities.Product;
+import com.maromvz.spaserver.entities.Service;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ProductRepo extends CrudRepository<Product, Long> {
+public interface ServiceRepo extends CrudRepository<Service, Long> {
 }

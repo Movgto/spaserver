@@ -13,4 +13,12 @@ app:
   jwt:
     secret: ${JWT_SECRET:ultra_secure_jwt_secret}
   auth:
-    cookieSecure: true
+    refresh-token:
+      cookie-name: ${APP_AUTH_REFRESHTOKEN_COOKIENAME:REFRESH_TOKEN}
+      duration: ${APP_AUTH_REFRESHTOKEN_DURATION:604800000}
+    cookie-secure: ${APP_AUTH_COOKIESECURE:true}
+    super-admin:
+      first-name: ${APP_AUTH_SUPERADMIN_FIRSTNAME}
+      last-name: ${APP_AUTH_SUPERADMIN_LASTNAME}
+      email: ${APP_AUTH_SUPERADMIN_EMAIL}
+      password: ${APP_AUTH_SUPERADMIN_PASSWORD}

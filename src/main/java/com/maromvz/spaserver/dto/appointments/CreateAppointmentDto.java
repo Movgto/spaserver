@@ -7,6 +7,6 @@ import java.time.LocalDateTime;
 @Data
 public class CreateAppointmentDto {
     private final LocalDateTime startTime;
-    private final Long productId;
+    private final Long serviceId;
     private final Long userId;
 }

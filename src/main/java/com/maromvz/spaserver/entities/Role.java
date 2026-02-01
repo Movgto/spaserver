@@ -1,9 +1,7 @@
 package com.maromvz.spaserver.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Data
@@ -12,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Enumerated(EnumType.STRING)
@@ -19,6 +18,10 @@ public class Role {
     private ERole name;
 
     public enum ERole {
-        ROLE_ADMIN, ROLE_USER
+        ROLE_ADMIN, ROLE_CUSTOMER, ROLE_THERAPIST, ROLE_SUPERADMIN
+    }
+
+    public Role(ERole role) {
+        name = role;
     }
 }

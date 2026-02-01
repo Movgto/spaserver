@@ -4,11 +4,13 @@ import com.maromvz.spaserver.entities.Role;
 import com.maromvz.spaserver.repo.RoleRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@Order(1)
 public class RoleSeeder implements CommandLineRunner {
     @Autowired
     private RoleRepo roleRepo;
@@ -17,8 +19,10 @@ public class RoleSeeder implements CommandLineRunner {
     public void run(String... args) throws Exception {
         if (roleRepo.count() == 0) {
             var roles = List.of(
-                    new Role(null, Role.ERole.ROLE_ADMIN),
-                    new Role(null, Role.ERole.ROLE_USER)
+                    new Role(Role.ERole.ROLE_ADMIN),
+                    new Role(Role.ERole.ROLE_CUSTOMER),
+                    new Role(Role.ERole.ROLE_THERAPIST),
+                    new Role(Role.ERole.ROLE_SUPERADMIN)
             );
 
             roleRepo.saveAll(roles);

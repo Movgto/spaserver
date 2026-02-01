@@ -47,10 +47,8 @@ public class AuthService {
         newUser.setLastName(userDto.getLastName());
         newUser.setEmail(userDto.getEmail());
 
-        var encodedPwd = passwordEncoder.encode(userDto.getPassword());
-
-        newUser.setPassword(encodedPwd);
-        newUser.addRole(role);
+        newUser.setPassword(userDto.getPassword(), passwordEncoder);
+        newUser.addRole(role, userDto.getPrivileges());
 
         userRepo.save(newUser);
 

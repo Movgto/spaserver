@@ -16,13 +16,18 @@ public class Appointment {
     private String id;
 
     @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @JoinColumn(name = "service_id", nullable = false)
+    private Service service;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    @JsonIgnoreProperties({"products", "roles"})
-    private User user;
+    @JoinColumn(name = "customer_id", nullable = false)
+    @JsonIgnoreProperties({"services", "roles"})
+    private User customer;
+
+    @ManyToOne
+    @JoinColumn(name = "employee_id")
+    @JsonIgnoreProperties({"services", "roles"})
+    private User employee = null;
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;

@@ -15,10 +15,10 @@ import java.util.stream.Stream;
 @Component
 public class RefreshTokenUtils {
 
-    @Value("${app.auth.refreshToken.cookieName}")
+    @Value("${app.auth.refresh-token.cookie-name}")
     private String refreshCookieName;
 
-    @Value("${app.auth.cookieSecure}")
+    @Value("${app.auth.cookie-secure}")
     private boolean isCookieSecure;
 
     public ResponseCookie generateRefreshCookie(String refreshToken) {

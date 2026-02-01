@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface AppointmentRepo extends CrudRepository<Appointment, AppointmentId> {
-    List<Appointment> findByUserId(Long userId);
+    List<Appointment> findByCustomerId(Long customerId);
 
     @Query("""
             SELECT COUNT(a) > 0 FROM Appointment a
@@ -20,4 +20,12 @@ public interface AppointmentRepo extends CrudRepository<Appointment, Appointment
             AND a.endTime > :newStart
             """)
     boolean existsTimeOverlap(LocalDateTime newStart, LocalDateTime newEnd);
+
+    @Query("""
+            SELECT COUNT(ap) > 0 FROM Appointment ap
+            WHERE ap.employee.id = :employeeId
+            AND ap.starTime < :endTime
+            AND ap.endTime > :startTime
+            """)
+    boolean checkOverlapingByEmployeeIdAndRange(Long employeeId, LocalDateTime startTime, LocalDateTime endTime);
 }

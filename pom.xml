@@ -73,5 +73,10 @@
             <version>0.12.3</version>
             <scope>runtime</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-envers</artifactId>
+        </dependency>
     </dependencies>
 </project>

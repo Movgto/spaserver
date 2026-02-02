@@ -86,11 +86,6 @@ public class User implements UserDetails {
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @NotAudited
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
-    private List<Appointment> services = new ArrayList<>();
-
     public void addRole(Role role, Set<UserRole.Privilege> privileges) {
         UserRole userRole = new UserRole();
 

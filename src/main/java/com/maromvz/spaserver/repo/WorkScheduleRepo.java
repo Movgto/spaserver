@@ -14,10 +14,10 @@ public interface WorkScheduleRepo extends CrudRepository<WorkSchedule, Long> {
 
     @Query("""
             SELECT ws.employee FROM WorkSchedule ws
-            WHERE ws.weekDay = :weekDay
-            AND ws.active = true
+            WHERE ws.active = true
+            AND ws.weekDay = :weekDay
             AND ws.startTime <= :startTime
             AND ws.endTime >= :endTime
             """)
-    List<User> findAvailableEmployeeeByShift(LocalTime startTime, LocalTime endTime, WorkSchedule.WeekDay weekDay);
+    List<User> findAvailableEmployeesByShift(LocalTime startTime, LocalTime endTime, WorkSchedule.WeekDay weekDay);
 }

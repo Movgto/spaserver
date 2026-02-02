@@ -8,6 +8,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(indexes = {
+        @Index(name = "idx_appointment_time", columnList = "startTime, endTime")
+})
 @Data
 public class Appointment {
 

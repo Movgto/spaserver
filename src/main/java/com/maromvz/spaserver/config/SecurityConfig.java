@@ -36,6 +36,7 @@ public class SecurityConfig {
                         .requestMatchers("/users/*", "/users").authenticated()
                         .requestMatchers("/appointments/*", "/appointments").authenticated()
                         .requestMatchers("/employees", "/employees/*").authenticated()
+                        .requestMatchers("/customers/*").authenticated()
                         .anyRequest().denyAll()
                 );
 

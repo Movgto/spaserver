@@ -2,6 +2,8 @@ package com.maromvz.spaserver.repo;
 
 import com.maromvz.spaserver.entities.Appointment;
 import com.maromvz.spaserver.entities.AppointmentId;
+import com.maromvz.spaserver.entities.User;
+import com.maromvz.spaserver.entities.WorkSchedule;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -22,10 +24,27 @@ public interface AppointmentRepo extends CrudRepository<Appointment, Appointment
     boolean existsTimeOverlap(LocalDateTime newStart, LocalDateTime newEnd);
 
     @Query("""
-            SELECT COUNT(ap) > 0 FROM Appointment ap
+            SELECT ap FROM Appointment ap
             WHERE ap.employee.id = :employeeId
-            AND ap.starTime < :endTime
+            AND ap.startTime < :endTime
             AND ap.endTime > :startTime
             """)
-    boolean checkOverlapingByEmployeeIdAndRange(Long employeeId, LocalDateTime startTime, LocalDateTime endTime);
+    List<Appointment> checkOverlapingByEmployeeIdAndRange(Long employeeId, LocalDateTime startTime, LocalDateTime endTime);
+
+    @Query("""
+            SELECT ap FROM Appointment ap
+            WHERE ap.status != 'CANCELLED'
+            AND ap.startTime >= :startTime
+            AND ap.endTime <= :endTime
+            """)
+    List<Appointment> findAllByRange(LocalDateTime startTime, LocalDateTime endTime);
+
+    @Query("""
+            SELECT ap FROM Appointment ap
+            WHERE ap.status != 'CANCELLED'
+            AND ap.employee = null
+            AND ap.startTime < :end
+            AND ap.endTime > :start
+            """)
+    List<Appointment> findOverlappingAndUnassaigned(LocalDateTime start, LocalDateTime end);
 }

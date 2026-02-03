@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: local
   project:
     name: spaserver
   datasource:
@@ -22,3 +24,8 @@ app:
       last-name: ${APP_AUTH_SUPERADMIN_LASTNAME}
       email: ${APP_AUTH_SUPERADMIN_EMAIL}
       password: ${APP_AUTH_SUPERADMIN_PASSWORD}
+stripe:
+  api-key: ${STRIPE_APIKEY}
+  success-url: ${STRIPE_SUCCESSURL}
+  cancel-url: ${STRIPE_CANCELURL}
+  webhook-secret: ${STRIPE_WEBHOOKSECRET}

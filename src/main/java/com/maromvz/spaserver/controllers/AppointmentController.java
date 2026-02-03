@@ -8,6 +8,8 @@ import com.maromvz.spaserver.exceptions.appointments.AppointmentOverlappingExcep
 import com.maromvz.spaserver.model.TimeSlot;
 import com.maromvz.spaserver.security.annotations.CanCreateAppointments;
 import com.maromvz.spaserver.services.AppointmentService;
+import com.maromvz.spaserver.stripe.StripeService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +21,12 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/appointments")
+@RequiredArgsConstructor
 public class AppointmentController {
 
-    @Autowired
-    private AppointmentService appointmentService;
+    private final AppointmentService appointmentService;
+
+    private final StripeService stripeService;
 
     @PostMapping
     public ResponseEntity<?> createAppointment(
@@ -37,7 +41,9 @@ public class AppointmentController {
         try {
             Appointment appointment = appointmentService.createAppointment(appointmentDto);
 
-            return ResponseEntity.ok(appointment);
+            var url = stripeService.createCheckoutSession(appointment);
+
+            return ResponseEntity.ok(url);
         } catch (AppointmentOverlappingException exception) {
             log.error("A time overlapping ocurred in appointment creation.");
 

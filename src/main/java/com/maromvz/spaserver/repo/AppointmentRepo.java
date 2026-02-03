@@ -1,9 +1,6 @@
 package com.maromvz.spaserver.repo;
 
 import com.maromvz.spaserver.entities.Appointment;
-import com.maromvz.spaserver.entities.AppointmentId;
-import com.maromvz.spaserver.entities.User;
-import com.maromvz.spaserver.entities.WorkSchedule;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -12,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface AppointmentRepo extends CrudRepository<Appointment, AppointmentId> {
+public interface AppointmentRepo extends CrudRepository<Appointment, String> {
     List<Appointment> findByCustomerId(Long customerId);
 
     @Query("""

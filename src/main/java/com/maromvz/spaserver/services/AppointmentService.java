@@ -10,6 +10,8 @@ import com.maromvz.spaserver.repo.AppointmentRepo;
 import com.maromvz.spaserver.repo.ServiceRepo;
 import com.maromvz.spaserver.repo.UserRepo;
 import com.maromvz.spaserver.repo.WorkScheduleRepo;
+import com.maromvz.spaserver.stripe.exceptions.AppointmentNotFoundException;
+import com.maromvz.spaserver.stripe.exceptions.AppointmentPaidOrCancelledException;
 import com.maromvz.spaserver.utils.GeneralUtils;
 import jakarta.persistence.LockModeType;
 import lombok.RequiredArgsConstructor;
@@ -184,5 +186,15 @@ public class AppointmentService {
         return freeSlotsForService;
     }
 
+    public Appointment confirmAppointment(String appointmentId) throws AppointmentPaidOrCancelledException, AppointmentNotFoundException {
+        Appointment appointment = appointmentRepo.findById(appointmentId).orElseThrow(() -> new AppointmentNotFoundException("Appointment not found."));
 
+        if (appointment.getStatus() != Appointment.Status.PENDING_PAYMENT) {
+            throw new AppointmentPaidOrCancelledException("The appointment has been already paid or cancelled");
+        }
+
+        appointment.setStatus(Appointment.Status.CONFIRMED);
+
+        return appointmentRepo.save(appointment);
+    }
 }

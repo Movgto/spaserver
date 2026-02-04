@@ -6,6 +6,8 @@ import com.maromvz.spaserver.security.annotations.CanCreateCustomers;
 import com.maromvz.spaserver.services.CustomerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,14 +23,13 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @PostMapping("/create")
-    @CanCreateCustomers
     public ResponseEntity<?> createCustomer(
             @RequestBody CreateCustomerDto customerDto
             ) {
         try {
             User customer = customerService.createCustomer(customerDto);
 
-            return ResponseEntity.status(401).body(customer);
+            return ResponseEntity.status(HttpStatus.CREATED).body(customer);
         } catch(Exception e) {
             log.info("An unexpected error ocurred while trying to create a Customer.");
             e.printStackTrace();

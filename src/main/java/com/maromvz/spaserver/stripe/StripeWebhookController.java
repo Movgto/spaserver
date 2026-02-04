@@ -37,7 +37,18 @@ public class StripeWebhookController {
             Event event = Webhook.constructEvent(payload, sigHeader, webhookSecret);
 
             if ("checkout.session.completed".equals(event.getType())) {
-                Session session = (Session) event.getDataObjectDeserializer().getObject().orElseThrow();
+
+                log.info("Completed checkout event reveived with info:");
+                log.info(event.toJson());
+
+                Session session;
+
+                if (event.getDataObjectDeserializer().getObject().isPresent()) {
+                    session = (Session) event.getDataObjectDeserializer().getObject().get();
+                } else {
+                    session = (Session) event.getDataObjectDeserializer().deserializeUnsafe();
+                }
+
 
                 String appointmentId = session.getMetadata().get("appointment_id");
 

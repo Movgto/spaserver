@@ -12,9 +12,7 @@ public class AuditRevisionListener implements RevisionListener {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if (auth != null && auth.isAuthenticated()) {
-            User user = (User) auth.getPrincipal();
-
+        if (auth != null && auth.getPrincipal() instanceof User user) {
             rev.setFingerprint(user.getFirstName() + " " + user.getLastName() + " " + user.getEmail());
         } else {
             rev.setFingerprint("SYSTEM");

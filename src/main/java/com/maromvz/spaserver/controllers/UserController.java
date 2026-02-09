@@ -1,6 +1,7 @@
 package com.maromvz.spaserver.controllers;
 
 import com.maromvz.spaserver.dto.AddProductsDTO;
+import com.maromvz.spaserver.dto.auth.AuthenticatedUserDto;
 import com.maromvz.spaserver.entities.User;
 import com.maromvz.spaserver.repo.UserRepo;
 import com.maromvz.spaserver.services.UserService;
@@ -21,11 +22,10 @@ public class UserController {
     public ResponseEntity<?> getUser(Authentication auth) {
         User user = (User) auth.getPrincipal();
 
-        return ResponseEntity.ok(new Object(){
-            public final Long userId = user.getId();
-            public final String firstName = user.getFirstName();
-            public final String lastName = user.getLastName();
-            public final String email = user.getEmail();
-        });
+        return ResponseEntity.ok(new AuthenticatedUserDto(
+            user.getFirstName(),
+            user.getLastName(),
+            user.getEmail()
+        ));
     }
 }

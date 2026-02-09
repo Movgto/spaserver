@@ -1,5 +1,6 @@
 package com.maromvz.spaserver.controllers;
 
+import com.maromvz.spaserver.dto.auth.AuthenticatedUserDto;
 import com.maromvz.spaserver.dto.auth.JwtResponse;
 import com.maromvz.spaserver.dto.auth.LoginDto;
 import com.maromvz.spaserver.dto.auth.RegisterUserDto;
@@ -94,11 +95,18 @@ public class AuthController {
 
             ResponseCookie responseCookie = refreshTokenUtils.generateRefreshCookie(refreshToken.getToken());
 
-            JwtResponse jwtResponse = new JwtResponse(token, user.getEmail(), user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList());
+            JwtResponse response = new JwtResponse(
+                    token,
+                    new AuthenticatedUserDto(
+                            user.getFirstName(),
+                            user.getLastName(),
+                            user.getEmail()
+                    )
+            );
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
-                    .body(jwtResponse);
+                    .body(response);
         } catch(Exception e) {
             log.info("An error ocurred while trying to login the user");
             e.printStackTrace();
@@ -112,13 +120,23 @@ public class AuthController {
         log.info("Refresh Token: " + token);
 
         if (token != null && !token.isEmpty()) {
+
             return refreshTokenRepo.findByToken(token)
                     .map(refreshTokenService::verifyTokenExpiration)
                     .map(RefreshToken::getUser)
                     .map(user -> {
                         String freshToken = jwtUtils.generateTokenFromEmail(user.getEmail());
 
-                        return ResponseEntity.ok(new JwtResponse(freshToken, user.getEmail(), user.getAuthorities().stream().map(a -> a.getAuthority()).toList()));
+                        JwtResponse response = new JwtResponse(
+                            freshToken,
+                            new AuthenticatedUserDto(
+                                    user.getFirstName(),
+                                    user.getLastName(),
+                                    user.getEmail()
+                            )
+                        );
+
+                        return ResponseEntity.ok(response);
                     })
                     .orElseThrow(() -> new RuntimeException("Token was not found on the database."));
         }

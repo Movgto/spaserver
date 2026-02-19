@@ -13,11 +13,11 @@ import java.util.List;
 public interface WorkScheduleRepo extends CrudRepository<WorkSchedule, Long> {
 
     @Query("""
-            SELECT ws.employee FROM WorkSchedule ws
+            SELECT ws FROM WorkSchedule ws
             WHERE ws.active = true
             AND ws.weekDay = :weekDay
-            AND ws.startTime <= :startTime
-            AND ws.endTime >= :endTime
+            AND ws.startTime <= :endTime
+            AND ws.endTime >= :startTime
             """)
-    List<User> findAvailableEmployeesByShift(LocalTime startTime, LocalTime endTime, WorkSchedule.WeekDay weekDay);
+    List<WorkSchedule> findAvailableEmployeesByShift(LocalTime startTime, LocalTime endTime, WorkSchedule.WeekDay weekDay);
 }

@@ -2,6 +2,7 @@ package com.maromvz.spaserver.controllers;
 
 import com.maromvz.spaserver.dto.appointments.CreateAppointmentDto;
 import com.maromvz.spaserver.dto.appointments.GetFreeSlotsDto;
+import com.maromvz.spaserver.dto.appointments.GetFreeSlotsForDaysDto;
 import com.maromvz.spaserver.entities.Appointment;
 import com.maromvz.spaserver.entities.User;
 import com.maromvz.spaserver.exceptions.appointments.AppointmentOverlappingException;
@@ -81,5 +82,21 @@ public class AppointmentController {
 
             return ResponseEntity.internalServerError().build();
         }
+    }
+
+    @PostMapping("/free-slots-days")
+    public ResponseEntity<?> getFreeSlotsForDays(
+            @RequestBody GetFreeSlotsForDaysDto dto
+            ) {
+        var freeSlotsByDate = dto.dates().stream()
+                .map(d -> {
+                    var startTime = d.withHour(0).withMinute(0);
+
+                    var endTime = d.withHour(23).withMinute(0);
+
+                    return appointmentService.getTimeSlotsByDate(startTime, endTime, dto.serviceId());
+                }).toList();
+
+        return ResponseEntity.ok(freeSlotsByDate);
     }
 }

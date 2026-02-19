@@ -57,7 +57,8 @@ public class AppointmentService {
 
         LocalDateTime endTime = appointmentDto.getStartTime().plusMinutes(service.getDurationMinutes());
 
-        List<User> availableEmployeesList = workScheduleRepo.findAvailableEmployeesByShift(appointmentDto.getStartTime().toLocalTime(), endTime.toLocalTime(), weekDay);
+        List<User> availableEmployeesList = workScheduleRepo.findAvailableEmployeesByShift(appointmentDto.getStartTime().toLocalTime(), endTime.toLocalTime(), weekDay)
+                .stream().map(WorkSchedule::getEmployee).toList();
 
         Set<User> availableEmployees = new HashSet<>(availableEmployeesList);
 
@@ -117,17 +118,25 @@ public class AppointmentService {
 
         log.info("Day of week for the appointment is {}", weekDay);
 
-        List<User> availableEmployees = workScheduleRepo.findAvailableEmployeesByShift(dayStart.toLocalTime(), dayEnd.toLocalTime(), weekDay);
+        log.info("Looking for employees available between {} and {}", dayStart, dayEnd);
 
-        List<Long> employeeIds = availableEmployees.stream().map(User::getId).toList();
+        List<WorkSchedule> availableEmployees = workScheduleRepo.findAvailableEmployeesByShift(dayStart.toLocalTime(), dayEnd.toLocalTime(), weekDay);
+
+        List<Long> employeeIds = availableEmployees.stream().map(ws -> ws.getEmployee().getId()).toList();
 
         log.info("Available employees:");
+
+        availableEmployees.forEach(e -> log.info(e.getEmployee().getEmail()));
 
         List<Appointment> allAppointments = appointmentRepo.findAllByRange(dayStart, dayEnd);
 
         Map<Long, List<Appointment>> availableEmployeeAppointments = allAppointments.stream()
                 .filter(a -> a.getEmployee() != null && employeeIds.contains(a.getEmployee().getId()))
                 .collect(Collectors.groupingBy(a -> a.getEmployee().getId()));
+
+        log.info("Available employees appointments:");
+
+        log.info(availableEmployeeAppointments.keySet().toString());
 
         List<Appointment> unassignedAppointments = allAppointments.stream().filter(a -> a.getEmployee() == null).toList();
 
@@ -154,8 +163,28 @@ public class AppointmentService {
 
             boolean enoughEmployeesToWork = overlappingUnassignedAppointments < availableEmployees.size();
 
+            log.info("There are enough employees to assign the appointment: {}", enoughEmployeesToWork);
+
+            boolean slotIsInsideEmployeeShift = availableEmployees.stream().anyMatch(ws -> {
+                return (ws.getStartTime().isBefore(slotStart.toLocalTime())
+                    || ws.getStartTime().equals(slotStart.toLocalTime())
+                ) && (ws.getEndTime().isAfter(slotEnd.toLocalTime())
+                    || ws.getEndTime().equals(slotEnd.toLocalTime())
+                );
+            });
+
+            if (!slotIsInsideEmployeeShift) {
+                currentSlotStart = currentSlotStart.plusMinutes(serviceDurationMinutes);
+                currentSlotEnd = currentSlotEnd.plusMinutes(serviceDurationMinutes);
+                continue;
+            }
+
             if (availableEmployeeAppointments.isEmpty() && enoughEmployeesToWork) {
                 freeSlotsForService.add(new TimeSlot(slotStart, slotEnd));
+
+                currentSlotStart = currentSlotStart.plusMinutes(serviceDurationMinutes);
+                currentSlotEnd = currentSlotEnd.plusMinutes(serviceDurationMinutes);
+                continue;
             }
 
             for (Long employeeId : employeeIds) {

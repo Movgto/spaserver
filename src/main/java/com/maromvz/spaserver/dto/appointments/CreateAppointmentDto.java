@@ -8,5 +8,5 @@ import java.time.LocalDateTime;
 public class CreateAppointmentDto {
     private final LocalDateTime startTime;
     private final Long serviceId;
-    private final Long userId;
+    private Long userId;
 }

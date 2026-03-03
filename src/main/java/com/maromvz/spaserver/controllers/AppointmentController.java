@@ -13,6 +13,8 @@ import com.maromvz.spaserver.stripe.StripeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +39,13 @@ public class AppointmentController {
 
         User user = (User) auth.getPrincipal();
 
-        if (!user.getId().equals(appointmentDto.getUserId())) return ResponseEntity.status(401).body("Unauthorized request");
+        if (user == null) {
+            log.info("The user is not authenticated.");
+
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        appointmentDto.setUserId(user.getId());
 
         try {
             Appointment appointment = appointmentService.createAppointment(appointmentDto);

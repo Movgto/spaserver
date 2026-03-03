@@ -41,7 +41,7 @@ public class SecurityConfig {
                         .requestMatchers("/services/**").permitAll()
                         .requestMatchers("/api/reservations").authenticated()
                         .requestMatchers("/users/*", "/users").authenticated()
-                        .requestMatchers("/appointments/*", "/appointments").authenticated()
+                        .requestMatchers("/appointments/*", "/appointments").permitAll()
                         .requestMatchers("/employees", "/employees/*").authenticated()
                         .requestMatchers("/customers/*").permitAll()
                         .requestMatchers("/api/v1/webhooks/**").permitAll()
